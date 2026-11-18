@@ -5,8 +5,8 @@ module uart_report_fsm (
     input start,
 
     input [31:0] score,
-    input [7:0] flagged_channel,
-    input [7:0] intensity,
+    input [2:0] flagged_channel,
+    input [15:0] intensity,
     input [31:0] latency,
 
     output reg tx_start,
@@ -51,18 +51,19 @@ module uart_report_fsm (
                 SEND: begin
                     if (!tx_busy) begin
 
-                        case (byte_index)
-                            0: tx_data <= 8'hA5;
-                            1: tx_data <= score[31:24];
-                            2: tx_data <= score[23:16];
-                            3: tx_data <= score[15:8];
-                            4: tx_data <= score[7:0];
-                            5: tx_data <= flagged_channel;
-                            6: tx_data <= intensity;
-                            7: tx_data <= latency[31:24];
-                            8: tx_data <= latency[23:16];
-                            9: tx_data <= latency[15:8];
-                            10: tx_data <= latency[7:0];
+                    case (byte_index)
+                            0:  tx_data <= 8'hA5;
+                            1:  tx_data <= score[31:24];
+                            2:  tx_data <= score[23:16];
+                            3:  tx_data <= score[15:8];
+                            4:  tx_data <= score[7:0];
+                            5:  tx_data <= {5'b0, flagged_channel};
+                            6:  tx_data <= intensity[15:8];
+                            7:  tx_data <= intensity[7:0];
+                            8:  tx_data <= latency[31:24];
+                            9:  tx_data <= latency[23:16];
+                            10: tx_data <= latency[15:8];
+                            11: tx_data <= latency[7:0];
                         endcase
 
                         tx_start <= 1;
@@ -72,7 +73,7 @@ module uart_report_fsm (
 
                 WAIT: begin
                     if (tx_done) begin
-                        if (byte_index == 10)
+                        if (byte_index == 11)
                             state <= FINISH;
                         else begin
                             byte_index <= byte_index + 1;
