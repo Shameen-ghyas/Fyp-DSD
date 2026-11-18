@@ -1,7 +1,7 @@
 
 module uart_report_fsm (
     input clk,
-    input reset,
+    input rst_n,
     input start,
 
     input [31:0] score,
@@ -25,9 +25,9 @@ module uart_report_fsm (
     reg [1:0] state;
     reg [3:0] byte_index;
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk or negedge rst_n) begin
 
-        if (reset) begin
+        if (!rst_n) begin
             state <= IDLE;
             byte_index <= 0;
             tx_start <= 0;

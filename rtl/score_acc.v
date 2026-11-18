@@ -1,8 +1,8 @@
 
 module score_acc (
     input clk,
-    input reset,
-    input enable,
+    input rst_n,
+    input en,
     input clear,
     input [17:0] error_ch0,
     input [17:0] error_ch1,
@@ -26,8 +26,8 @@ module score_acc (
         score_ch0 + score_ch1 + score_ch2 +
         score_ch3 + score_ch4 + score_ch5 + score_ch6;
 
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             score_ch0 <= 0;
             score_ch1 <= 0;
             score_ch2 <= 0;
@@ -45,7 +45,7 @@ module score_acc (
             score_ch5 <= 0;
             score_ch6 <= 0;
         end
-        else if (enable) begin
+        else if (en) begin
             score_ch0 <= score_ch0 + error_ch0;
             score_ch1 <= score_ch1 + error_ch1;
             score_ch2 <= score_ch2 + error_ch2;

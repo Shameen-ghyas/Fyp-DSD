@@ -4,7 +4,7 @@ module robust_scaler #(
   parameter FRAC = 8
 )(
   input                    clk,
-  input                    rst,
+  input                    rst_n,
   input  signed [15:0]     x,
   output reg signed [7:0]  y
 );
@@ -14,7 +14,7 @@ module robust_scaler #(
   wire signed [33:0] shifted = rounded >>> FRAC;
 
   always @(posedge clk) begin
-    if (rst)
+    if (!rst_n)
       y <= 8'sd0;
     else if (shifted > 127)
       y <= 8'sd127;

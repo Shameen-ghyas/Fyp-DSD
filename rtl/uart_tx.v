@@ -4,12 +4,12 @@ module uart_tx #(
     parameter BAUD_RATE = 115200
 )(
     input clk,
-    input reset,
+    input rst_n,
     input tx_start,
     input [7:0] tx_data,
 
     output reg tx,
-    output reg busy,
+    output reg tx_busy,
     output reg tx_done
 );
 
@@ -25,12 +25,12 @@ module uart_tx #(
     reg [2:0] bit_index;
     reg [7:0] data_reg;
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk or negedge rst_n) begin
 
-        if (reset) begin
+        if (!rst_n) begin
             state <= IDLE;
             tx <= 1'b1;
-            busy <= 0;
+            tx_busy <= 0;
             tx_done <= 0;
             baud_count <= 0;
             bit_index <= 0;
@@ -44,11 +44,11 @@ module uart_tx #(
 
                 IDLE: begin
                     tx <= 1;
-                    busy <= 0;
+                    tx_busy <= 0;
 
                     if (tx_start) begin
                         data_reg <= tx_data;
-                        busy <= 1;
+                        tx_busy <= 1;
                         baud_count <= 0;
                         state <= START;
                     end

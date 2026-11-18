@@ -1,7 +1,7 @@
 
 module debounce (
     input clk,
-    input reset,
+    input rst_n,
     input button_in,
     output reg button_out
 );
@@ -10,9 +10,9 @@ module debounce (
 
     reg [20:0] count;
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk or negedge rst_n) begin
 
-        if (reset) begin
+        if (!rst_n) begin
             count <= 0;
             button_out <= 0;
         end

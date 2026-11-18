@@ -1,11 +1,11 @@
 module phase_counter #(parameter N = 16, AW = 4)(
   input               clk,
-  input               rst,
+  input               rst_n,
   input               en,
   output reg [AW-1:0] phase
 );
   always @(posedge clk) begin
-    if (rst)
+    if (!rst_n)
       phase <= 0;
     else if (en) begin
       if (phase == N-1)
@@ -46,14 +46,14 @@ endmodule
 
 module phase_top (
   input                   clk,
-  input                   rst,
+  input                   rst_n,
   input                   en,
   output signed [7:0]     sin_out,
   output signed [7:0]     cos_out
 );
   wire [3:0] phase;
 
-  phase_counter #(.N(16), .AW(4)) u_cnt (.clk(clk), .rst(rst), .en(en), .phase(phase));
+  phase_counter #(.N(16), .AW(4)) u_cnt (.clk(clk), .rst_n(rst_n), .en(en), .phase(phase));
   orbit_phase_rom u_rom (.clk(clk), .addr(phase), .sin_out(sin_out), .cos_out(cos_out));
 endmodule
 

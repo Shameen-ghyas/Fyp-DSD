@@ -1,16 +1,16 @@
 
 module perf_counter (
     input clk,
-    input reset,
+    input rst_n,
     input start,
     input done,
     output reg [31:0] cycle_count,
     output reg busy
 );
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk or negedge rst_n) begin
 
-        if (reset) begin
+        if (!rst_n) begin
             cycle_count <= 0;
             busy <= 0;
         end

@@ -1,7 +1,7 @@
 
 module seg7_driver (
     input clk,
-    input reset,
+    input rst_n,
     input [31:0] data_in,
 
     output reg [7:0] an,
@@ -12,8 +12,8 @@ module seg7_driver (
     wire [2:0] digit_select;
     reg [3:0] hex_digit;
 
-    always @(posedge clk or posedge reset) begin
-        if (reset)
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
             refresh_count <= 0;
         else
             refresh_count <= refresh_count + 1;
