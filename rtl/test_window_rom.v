@@ -1,26 +1,25 @@
-
 module test_window_rom #(
-    parameter DATA_WIDTH = 63,
+    parameter DW    = 63,
     parameter DEPTH = 256,
-    parameter ADDR_WIDTH = 8,
-    parameter MEM_FILE = "test_window.mem"
+    parameter AW    = 8,
+    parameter FILE  = "test_window.mem"
 )(
     input clk,
-    input enable,
-    input [ADDR_WIDTH-1:0] address,
+    input en,
+    input [AW-1:0] addr,
 
-    output reg [DATA_WIDTH-1:0] data_out
+    output reg [DW-1:0] dout
 );
 
-    reg [DATA_WIDTH-1:0] memory [0:DEPTH-1];
+    reg [DW-1:0] memory [0:DEPTH-1];
 
     initial begin
-        $readmemh(MEM_FILE, memory);
+        $readmemh(FILE, memory);
     end
 
     always @(posedge clk) begin
-        if (enable)
-            data_out <= memory[address];
+        if (en)
+            dout <= memory[addr];
     end
 
 endmodule
